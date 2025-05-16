@@ -1,16 +1,19 @@
-package com.fusionpulse.userhub.services.user;
+package com.fusionpulse.userhub.user.services;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fusionpulse.userhub.model.user.dto.UserDto;
-import com.fusionpulse.userhub.model.user.dto.UserRespDto;
-import com.fusionpulse.userhub.model.user.dto.UserUpdateDto;
-import com.fusionpulse.userhub.model.user.entity.User;
-import com.fusionpulse.userhub.repositories.user.UserRepository;
+import com.fusionpulse.userhub.user.model.dto.UserDto;
+import com.fusionpulse.userhub.user.model.dto.UserRespDto;
+import com.fusionpulse.userhub.user.model.dto.UserUpdateDto;
+import com.fusionpulse.userhub.user.model.entity.User;
+import com.fusionpulse.userhub.user.repositories.UserRepository;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -19,7 +22,7 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Override
-    public User createUser(UserDto dto) {
+    public String createUser(UserDto dto) {
         if(userRepository.existsByEmail(dto.getEmail())){
             throw new IllegalArgumentException("Email already exists");
         }
@@ -27,14 +30,16 @@ public class UserServiceImpl implements UserService {
         user.setName(dto.getName());
         user.setEmail(dto.getEmail());
         user.setRole(dto.getRole());
-        return userRepository.save(user);
+        userRepository.save(user);
+        return "Success";
     }
     
 
     @Override
-    public List<User> getAllUsers() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllUsers'");
+    public List<UserRespDto> getAllUsers() {
+        List<User> users = userRepository.findAll();
+        List<UserRespDto> userRespDtos = users.stream().map(this::userEntityToDto).collect(Collectors.toList());
+        return userRespDtos;
     }
 
     @Override
@@ -45,7 +50,7 @@ public class UserServiceImpl implements UserService {
             UserRespDto userRespDto = userEntityToDto(exUser);
             return userRespDto;
         }else{
-            throw new IllegalArgumentException("Id does not exists");
+            throw new NoSuchElementException("User not found");
         }
     }
 
@@ -61,23 +66,26 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public User updateUser(Long id, UserUpdateDto dto) {
+    public String updateUser(Long id, UserUpdateDto dto) {
         Optional<User> existingUser = userRepository.findById(dto.getId());
         if(existingUser.isPresent()){
             User exUser = existingUser.get();
             exUser.setName(dto.getName());
             exUser.setEmail(dto.getEmail());
             exUser.setRole(dto.getRole());
-            return userRepository.save(exUser);
+            userRepository.save(exUser);
+            return "Successfully updated";
         }else{
-            throw new IllegalArgumentException("Id does not exists");
+            throw new NoSuchElementException("User not found");
         }
 
     }
 
     @Override
     public void deleteUser(Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteUser'");
+        if(!userRepository.existsById(id)){
+            throw new NoSuchElementException("User not found");
+        }
+        userRepository.deleteById(id);
     }
 }

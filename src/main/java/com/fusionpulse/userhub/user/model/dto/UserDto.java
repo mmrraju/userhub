@@ -1,4 +1,4 @@
-package com.fusionpulse.userhub.model.user.dto;
+package com.fusionpulse.userhub.user.model.dto;
 
 import com.fusionpulse.userhub.common.enumlist.UserRole;
 
@@ -8,10 +8,7 @@ import jakarta.validation.constraints.*;
 import lombok.Data;
 
 @Data
-public class UserRespDto {
-    @NotBlank(message = "id is required")
-    private Long id;
-
+public class UserDto {
     @NotBlank(message = "Name is required")
     private String name;
 
@@ -20,5 +17,5 @@ public class UserRespDto {
     private String email;
 
     @Enumerated(EnumType.STRING)
-    private UserRole role;        
+    private UserRole role;    
 }

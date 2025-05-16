@@ -1,4 +1,4 @@
-package com.fusionpulse.userhub.model.user.dto;
+package com.fusionpulse.userhub.user.model.dto;
 
 import com.fusionpulse.userhub.common.enumlist.UserRole;
 

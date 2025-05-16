@@ -1,9 +1,10 @@
-package com.fusionpulse.userhub.repositories.user;
+package com.fusionpulse.userhub.user.repositories;
 
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import com.fusionpulse.userhub.model.user.entity.User;
+
+import com.fusionpulse.userhub.user.model.entity.User;
 
 public interface UserRepository  extends JpaRepository<User, Long>{
 

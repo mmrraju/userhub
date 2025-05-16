@@ -1,4 +1,4 @@
-package com.fusionpulse.userhub.model.user.entity;
+package com.fusionpulse.userhub.user.model.entity;
 
 import com.fusionpulse.userhub.common.enumlist.UserRole;
 import jakarta.persistence.*;
